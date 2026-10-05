@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Gilded Spine — Independent Booksellers</title>
+
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bs-primary:#8c4a2f;
+    --ink:#1f2a24;
+    --paper:#f3ecdd;
+    --paper-2:#eae1cb;
+    --brass:#b08d57;
+    --rust:#8c4a2f;
+    --sage:#6b7a5e;
+    --text:#2b2118;
+    --text-soft:#5c5142;
+    --card:#fbf7ec;
+  }
+  body{
+    background:var(--paper);
+    color:var(--text);
+    font-family:'Source Serif 4', serif;
+  }
+  h1,h2,h3,h4,.font-display{font-family:'Fraunces', serif;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+
+  /* Navbar */
+  .navbar-gs{
+    background:var(--ink);
+    border-bottom:3px solid var(--brass);
+  }
+  .navbar-gs .navbar-brand{color:var(--paper); font-family:'Fraunces', serif; font-weight:600;}
+  .navbar-gs .navbar-brand small{
+    display:block; font-family:'JetBrains Mono', monospace; font-size:0.6rem;
+    letter-spacing:0.16em; color:var(--brass); text-transform:uppercase;
+  }
+  .navbar-gs .form-control{
+    background:rgba(243,236,221,0.08); border-color:rgba(243,236,221,0.25); color:var(--paper);
+  }
+  .navbar-gs .form-control::placeholder{color:rgba(243,236,221,0.5);}
+  .navbar-gs .btn-outline-brass{
+    border-color:var(--brass); color:var(--paper);
+  }
+  .navbar-gs .btn-outline-brass:hover{background:var(--brass); color:var(--ink);}
+
+  /* Sidebar */
+  .sidebar{
+    background:var(--paper-2);
+  }
+  .sidebar .list-group-item{
+    background:var(--card);
+    border-left:4px solid var(--brass);
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    color:var(--text);
+    cursor:pointer;
+  }
+  .sidebar .list-group-item.active{
+    background:#fff;
+    border-left-color:var(--rust);
+    color:var(--text);
+    border-color:rgba(43,33,24,0.18);
+    box-shadow:0 1px 0 rgba(43,33,24,0.06);
+  }
+  .sidebar .list-group-item .badge{
+    background:var(--paper-2); color:var(--text-soft); font-family:'JetBrains Mono', monospace; font-weight:500;
+  }
+  .sidebar .list-group-item.active .badge{background:var(--paper-2);}
+  .sidebar-label{
+    font-family:'JetBrains Mono', monospace; font-size:0.68rem; letter-spacing:0.16em;
+    text-transform:uppercase; color:var(--rust);
+  }
+  .offcanvas.sidebar{width:290px;}
+
+  /* Stats section */
+  .stat-card{
+    background:var(--card);
+    border:1px solid rgba(43,33,24,0.15);
+    border-top:3px solid var(--brass);
+  }
+  .stat-number{
+    font-family:'Fraunces', serif; font-weight:700; font-size:2.1rem; color:var(--ink);
+  }
+  .stat-label{
+    font-family:'JetBrains Mono', monospace; font-size:0.68rem; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--text-soft);
+  }
+  .genre-progress .progress{
+    height:0.6rem; background:var(--paper-2);
+  }
+  .genre-progress .progress-bar{background:var(--rust);}
+
+  /* Book cards */
+  .book-card{
+    background:var(--card);
+    border:1px solid rgba(43,33,24,0.15);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .book-card:hover{transform:translateY(-3px); box-shadow:0 8px 18px rgba(43,33,24,0.12);}
+  .book-cover{
+    height:210px; display:flex; align-items:center; justify-content:center;
+    color:var(--paper); text-align:center; padding:1rem; position:relative;
+    border-bottom:1px solid rgba(43,33,24,0.15);
+  }
+  .book-cover .call-number{
+    position:absolute; top:0.4rem; left:0.4rem; font-size:0.6rem;
+    background:rgba(31,42,36,0.8); padding:0.15rem 0.4rem;
+  }
+  .book-card .title{font-family:'Fraunces', serif; font-weight:600; font-size:1rem; color:var(--ink);}
+  .book-card .author{font-size:0.85rem; color:var(--text-soft); font-style:italic;}
+  .book-card .price{font-family:'JetBrains Mono', monospace; font-weight:600; color:var(--rust);}
+  .badge-genre{
+    font-family:'JetBrains Mono', monospace; font-size:0.6rem; letter-spacing:0.05em;
+    text-transform:uppercase; background:transparent; border:1px solid var(--sage); color:var(--sage);
+  }
+
+  .hero-eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:0.7rem; letter-spacing:0.18em;
+    text-transform:uppercase; color:var(--rust);
+  }
+
+  footer{background:var(--ink); color:var(--paper); border-top:3px solid var(--brass);}
+  footer a{color:rgba(243,236,221,0.75); text-decoration:none;}
+  footer a:hover{color:var(--paper);}
+  footer h6{font-family:'JetBrains Mono', monospace; font-size:0.68rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--brass);}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-gs sticky-top py-2">
+  <div class="container-fluid px-3 px-lg-4">
+    <button class="btn btn-outline-brass d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas">
+      <i class="bi bi-list"></i>
+    </button>
+    <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+      <span class="border border-brass px-2 py-1" style="border-color:var(--brass)!important;">GS</span>
+      <span>The Gilded Spine<small>Est. 1962 · Booksellers</small></span>
+    </a>
+    <div class="d-none d-md-flex ms-auto" style="width:260px;">
+      <div class="input-group">
+        <span class="input-group-text bg-transparent border-0"><i class="bi bi-search text-white-50"></i></span>
+        <input type="text" class="form-control border-0" placeholder="Search the shelves…" aria-label="Search">
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Offcanvas sidebar (mobile) -->
+<div class="offcanvas offcanvas-start sidebar" tabindex="-1" id="sidebarOffcanvas">
+  <div class="offcanvas-header border-bottom">
+    <span class="sidebar-label">Catalog</span>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body p-3" id="sidebarBodyMobile"></div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+
+    <!-- Sidebar (desktop) -->
+    <aside class="col-lg-3 col-xl-2 sidebar d-none d-lg-block py-4 px-3" style="min-height:100vh;">
+      <div id="sidebarBodyDesktop"></div>
+    </aside>
+
+    <!-- Main -->
+    <main class="col-lg-9 col-xl-10 py-4 px-3 px-lg-4">
+
+      <!-- Hero -->
+      <div class="row align-items-center pb-4 mb-4 border-bottom">
+        <div class="col-md-7">
+          <div class="hero-eyebrow mb-2">Weekly Acquisitions — No. 214</div>
+          <h1 class="font-display fw-semibold" style="font-size:clamp(1.8rem,4vw,3rem); color:var(--ink);">
+            Shelved by hand,<br><em class="text-primary fw-medium">found</em> by chance.
+          </h1>
+          <p class="mt-3 text-secondary" style="max-width:44ch;">Three floors of secondhand and new titles, catalogued the old way — by hand, by drawer, and by the smell of the paper.</p>
+          <div class="d-flex gap-2 mt-3">
+            <a href="#shelves" class="btn btn-dark rounded-0 mono text-uppercase" style="font-size:0.75rem; letter-spacing:0.08em;">Enter the Shelves</a>
+            <a href="#stats" class="btn btn-outline-dark rounded-0 mono text-uppercase" style="font-size:0.75rem; letter-spacing:0.08em;">Store Statistics</a>
+          </div>
+        </div>
+        <div class="col-md-5 mt-4 mt-md-0">
+          <div class="p-3 stat-card">
+            <div class="sidebar-label mb-2 pb-2 border-bottom">Today's Ledger</div>
+            <div class="d-flex justify-content-between border-bottom border-dashed py-2"><span>Books catalogued</span><span class="mono text-primary">47</span></div>
+            <div class="d-flex justify-content-between border-bottom border-dashed py-2"><span>First editions found</span><span class="mono text-primary">3</span></div>
+            <div class="d-flex justify-content-between py-2"><span>Regulars in-store</span><span class="mono text-primary">8</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistics Section -->
+      <section id="stats" class="mb-5">
+        <div class="d-flex justify-content-between align-items-baseline mb-3 flex-wrap gap-2">
+          <h3 class="fw-semibold" style="color:var(--ink);">Store in Numbers</h3>
+          <span class="mono text-secondary" style="font-size:0.75rem;">Updated this morning</span>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-3">
+            <div class="stat-card p-3 text-center rounded-0 h-100">
+              <div class="stat-number">12,480</div>
+              <div class="stat-label mt-1">Titles in Stock</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card p-3 text-center rounded-0 h-100">
+              <div class="stat-number">3,214</div>
+              <div class="stat-label mt-1">Customers This Year</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card p-3 text-center rounded-0 h-100">
+              <div class="stat-number">64</div>
+              <div class="stat-label mt-1">Years Trading</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-card p-3 text-center rounded-0 h-100">
+              <div class="stat-number">4.8<i class="bi bi-star-fill text-warning ms-1" style="font-size:1.1rem;"></i></div>
+              <div class="stat-label mt-1">Average Rating</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="stat-card p-3 h-100">
+              <div class="sidebar-label mb-3">Stock by Genre</div>
+              <div class="genre-progress mb-3">
+                <div class="d-flex justify-content-between mono small mb-1"><span>Fiction</span><span>34%</span></div>
+                <div class="progress rounded-0"><div class="progress-bar" style="width:34%"></div></div>
+              </div>
+              <div class="genre-progress mb-3">
+                <div class="d-flex justify-content-between mono small mb-1"><span>History</span><span>21%</span></div>
+                <div class="progress rounded-0"><div class="progress-bar" style="width:21%"></div></div>
+              </div>
+              <div class="genre-progress mb-3">
+                <div class="d-flex justify-content-between mono small mb-1"><span>Children's</span><span>15%</span></div>
+                <div class="progress rounded-0"><div class="progress-bar" style="width:15%"></div></div>
+              </div>
+              <div class="genre-progress mb-3">
+                <div class="d-flex justify-content-between mono small mb-1"><span>Poetry</span><span>16%</span></div>
+                <div class="progress rounded-0"><div class="progress-bar" style="width:16%"></div></div>
+              </div>
+              <div class="genre-progress">
+                <div class="d-flex justify-content-between mono small mb-1"><span>Rare &amp; First Editions</span><span>9%</span></div>
+                <div class="progress rounded-0"><div class="progress-bar" style="width:9%"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="stat-card p-3 h-100">
+              <div class="sidebar-label mb-3">This Month</div>
+              <div class="row g-3 text-center">
+                <div class="col-6">
+                  <div class="p-3 border h-100">
+                    <div class="stat-number" style="font-size:1.6rem;">318</div>
+                    <div class="stat-label mt-1">Books Sold</div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="p-3 border h-100">
+                    <div class="stat-number" style="font-size:1.6rem;">52</div>
+                    <div class="stat-label mt-1">New Arrivals</div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="p-3 border h-100">
+                    <div class="stat-number" style="font-size:1.6rem;">27</div>
+                    <div class="stat-label mt-1">Special Orders</div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="p-3 border h-100">
+                    <div class="stat-number" style="font-size:1.6rem;">6</div>
+                    <div class="stat-label mt-1">Author Events</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Book Grid -->
+      <section id="shelves">
+        <div class="d-flex justify-content-between align-items-baseline mb-3 flex-wrap gap-2">
+          <h3 class="fw-semibold" style="color:var(--ink);">From the Shelves</h3>
+          <span class="mono text-secondary" id="tally" style="font-size:0.75rem;">Showing 8 of 128 titles</span>
+        </div>
+
+        <div class="row g-3" id="bookGrid">
+
+          <div class="col-6 col-md-4 col-xl-3 book-item" data-cat="fiction">
+            <div class="book-card h-100 d-flex flex-column">
+              <div class="book-cover" style="background:#5c3d2e;">
+                <span class="call-number mono">PZ3 .M55</span>
+                <div><div class="fw-semibold" style="font-family:'Fraunces',serif;">The Salt Orchard</div><div class="mono small mt-1">M. Kessler</div></div>
+              </div>
+              <div class="p-3 flex-grow-1 d-flex flex-column">
+                <div class="title">The Salt Orchard</div>
+                <div class="author">Miriam Kessler</div>
+                <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top border-dashed">
+                  <span class="price">$14.00</span><span class="badge badge-genre">Fiction</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-4 col-xl-3 book-item" data-cat="poetry">
+            <div class="book-card h-100 d-flex flex-column">
+              <div class="book-cover" style="background:#6b7a5e;">
+                <span class="call-number mono">PS3 .A11</span>
+                <div><div class="fw-semibold" style="font-family:'Fraunces',serif;">Low Tide Hours</div><div class="mono small mt-1">R. Adaeze</div></div>
+              </div>
+              <div class="p-3 flex-grow-1 d-flex flex-column">
+                <div class="title">Low Tide Hours</div>
+                <div class="author">Rosalind Adaeze</div>
+                <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top border-dashed">
+                  <span class="price">$11.50</span><span class="badge badge-genre">Poetry</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-4 col-xl-3 book-item" data-cat="history">
+            <div class="book-card h-100 d-flex flex-column">
+              <div class="book-cover" style="background:#8c4a2f;">
+                <span class="call-number mono">D21 .F76</span>
+                <div><div class="fw-semibold" style="font-family:'Fraunces',serif;">The Long Winter Trade</div><div class="mono small mt-1">H. Voss</div></div>
+              </div>
+              <div class="p-3 flex-grow-1 d-flex flex-column">
+                <div class="title">The Long Winter Trade</div>
+                <div class="author">Henrik Voss</div>
+                <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top border-dashed">
+                  <span class="price">$22.00</span><span class="badge badge-genre">History</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-4 col-xl-3 book-item" data-cat="science">
+            <div class="book-card h-100 d-flex flex-column">
+              <div class="book-cover" style="background:#3d4a3f;">
+                <span class="call-number mono">QH3 .N02</span>
+                <div><div class="fw-semibold" style="font-family:'Fraunces',serif;">A Field Guide to Lichen</div><div class="mono small mt-1">P. Osei</div></div>
+              </div>
+              <div class="p-3 flex-grow-1 d-flex flex-column">
+                <div class="title">A Field Guide to Lichen</div>
+                <div class="author">Priya Osei</div>
+                <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top border-dashed">
+                  <span class="price">$18.75</span><span class="badge badge-genre">Science</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-4 col-xl-3 book-item" data-cat="philosophy">
+            <div class="book-card h-100 d-flex flex-column">
+              <div class="book-cover" style="background:#4a3f5c;">
+                <span class="call-number mono">B21 .T44</span>
+                <div><div class="fw-semibold" style="font-family:'Fraunces',serif;">On Being Unfinished</div><div class="mono small mt-1">T. Lindqvist</div></div>
+              </div>
+              <div class="p-3 flex-grow-1 d-flex flex-column">
+                <div class="title">On Being Unfinished</div>
+                <div class="author">Tove Lindqvist</div>
+                <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top border-dashed">
+                  <span class="price">$16.00</span><span class="badge badge-genre">Philosophy</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-4 col-xl-3 book-item" data-cat="children">
+            <div class="book-card h-100 d-flex flex-column">
+              <div class="book-cover" style="background:#b08d57;">
+                <span class="call-number mono">PZ7 .C19</span>
+                <div><div class="fw-semibold" style="font-family:'Fraunces',serif;">The Button Collector</div><div class="mono small mt-1">J. Marsh</div></div>
+              </div>
+              <div class="p-3 flex-grow-1 d-flex flex-column">
+                <div class="title">The Button Collector</div>
+                <div class="author">June Marsh</div>
+                <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top border-dashed">
+                  <span class="price">$9.25</span><span class="badge badge-genre">Children's</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-4 col-xl-3 book-item" data-cat="rare">
+            <div class="book-card h-100 d-flex flex-column">
+              <div class="book-cover" style="background:#2b2118;">
+                <span class="call-number mono">1st Ed. 1931</span>
+                <div><div class="fw-semibold" style="font-family:'Fraunces',serif;">Cartographer's Rest</div><div class="mono small mt-1">E. Boone</div></div>
+              </div>
+              <div class="p-3 flex-grow-1 d-flex flex-column">
+                <div class="title">Cartographer's Rest</div>
+                <div class="author">Elias Boone</div>
+                <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top border-dashed">
+                  <span class="price">$185.00</span><span class="badge badge-genre">Rare</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-4 col-xl-3 book-item" data-cat="fiction">
+            <div class="book-card h-100 d-flex flex-column">
+              <div class="book-cover" style="background:#7a5c3d;">
+                <span class="call-number mono">PZ3 .W88</span>
+                <div><div class="fw-semibold" style="font-family:'Fraunces',serif;">The Quiet Machinists</div><div class="mono small mt-1">D. Whitlock</div></div>
+              </div>
+              <div class="p-3 flex-grow-1 d-flex flex-column">
+                <div class="title">The Quiet Machinists</div>
+                <div class="author">Dara Whitlock</div>
+                <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top border-dashed">
+                  <span class="price">$15.50</span><span class="badge badge-genre">Fiction</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<footer class="py-4 px-3 px-lg-5 mt-5">
+  <div class="row g-4">
+    <div class="col-6 col-md-3">
+      <h6>Visit</h6>
+      <p class="small mb-0">14 Marrow Lane<br>Open Tue–Sun, 10–7</p>
+    </div>
+    <div class="col-6 col-md-3">
+      <h6>Browse</h6>
+      <a href="#" class="small d-block mb-1">New Arrivals</a>
+      <a href="#" class="small d-block mb-1">Rare &amp; First Editions</a>
+      <a href="#" class="small d-block">Staff Picks</a>
+    </div>
+    <div class="col-6 col-md-3">
+      <h6>Services</h6>
+      <a href="#" class="small d-block mb-1">Book Appraisals</a>
+      <a href="#" class="small d-block mb-1">Special Orders</a>
+      <a href="#" class="small d-block">Trade-Ins</a>
+    </div>
+    <div class="col-6 col-md-3">
+      <h6>Follow</h6>
+      <a href="#" class="small d-block mb-1">The Weekly Ledger</a>
+      <a href="#" class="small d-block">Instagram</a>
+    </div>
+  </div>
+  <div class="d-flex justify-content-between flex-wrap gap-2 mono mt-4 pt-3 border-top border-secondary-subtle" style="font-size:0.7rem; opacity:0.6;">
+    <span>© 1962–2026 The Gilded Spine Booksellers</span>
+    <span>Built with Bootstrap 5</span>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Build sidebar content once, inject into both desktop and mobile containers
+  const categories = [
+    { name: "All Holdings", filter: "all", count: 128 },
+    { name: "Fiction", filter: "fiction", count: 34 },
+    { name: "Poetry", filter: "poetry", count: 16 },
+    { name: "History", filter: "history", count: 21 },
+    { name: "Natural Science", filter: "science", count: 18 },
+    { name: "Philosophy", filter: "philosophy", count: 12 },
+    { name: "Children's", filter: "children", count: 15 },
+    { name: "Rare & First Editions", filter: "rare", count: 12 }
+  ];
+
+  function buildSidebar(){
+    let html = `<div class="sidebar-label mb-3 pb-2 border-bottom">Browse by Drawer</div>
+                 <div class="list-group list-group-flush rounded-0 mb-2">`;
+    categories.forEach((c, i) => {
+      html += `<button type="button" class="list-group-item list-group-item-action rounded-0 mb-2 d-flex justify-content-between align-items-center ${i===0 ? 'active' : ''}" data-filter="${c.filter}">
+                 ${c.name} <span class="badge rounded-pill">${c.count}</span>
+               </button>`;
+    });
+    html += `</div>
+             <blockquote class="mt-4 pt-3 border-top small fst-italic text-secondary">
+               "A room without books is like a body without a soul."
+             </blockquote>`;
+    return html;
+  }
+
+  document.getElementById('sidebarBodyDesktop').innerHTML = buildSidebar();
+  document.getElementById('sidebarBodyMobile').innerHTML = buildSidebar();
+
+  function wireFilters(){
+    document.querySelectorAll('[data-filter]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+
+        // sync active state across both sidebars
+        document.querySelectorAll('[data-filter]').forEach(b => {
+          b.classList.toggle('active', b.dataset.filter === filter);
+        });
+
+        let shown = 0;
+        document.querySelectorAll('.book-item').forEach(item => {
+          const match = filter === 'all' || item.dataset.cat === filter;
+          item.style.display = match ? '' : 'none';
+          if(match) shown++;
+        });
+        document.getElementById('tally').textContent = `Showing ${shown} of 128 titles`;
+
+        // close mobile offcanvas if open
+        const offcanvasEl = document.getElementById('sidebarOffcanvas');
+        const instance = bootstrap.Offcanvas.getInstance(offcanvasEl);
+        if(instance) instance.hide();
+
+        document.getElementById('shelves').scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    });
+  }
+  wireFilters();
+</script>
+
+</body>
+</html>
